@@ -1,0 +1,686 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AT - Autorização para Trabalho</title>
+<style>
+  :root{
+    --primary:#2b6cb0;
+    --dark:#1a202c;
+    --gray:#4a5568;
+    --light:#edf2f7;
+    --border:#cbd5e0;
+    --accent:#3182ce;
+    --danger:#e53e3e;
+  }
+
+  *{ box-sizing:border-box; }
+  html, body{
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", "Apple Color Emoji","Segoe UI Emoji";
+    color:#111;
+    background:#f6f7fb;
+    margin:0;
+  }
+
+  .page{
+    max-width: 960px;
+    margin: 24px auto;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,.07);
+    border: 1px solid var(--border);
+  }
+
+  header{
+    padding: 16px 20px 12px;
+    border-bottom: 3px solid var(--dark);
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .logo{
+    width:110px;height:34px;background:var(--dark);
+    border-radius:4px;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:700;font-size:12px;letter-spacing:.5px;
+  }
+  .title{
+    flex:1; min-width: 220px;
+  }
+  .title h1{
+    margin:0;font-size:18px;line-height:1.2;font-weight:800;letter-spacing:.2px;
+  }
+  .rev{
+    display:flex; gap:8px; align-items:stretch; flex-wrap:wrap;
+  }
+  .rev .box{
+    border:1px solid var(--border); padding:6px 8px; font-size:12px; min-width:140px;
+    display:flex; align-items:center; gap:6px; border-radius:6px; background:#fafafa;
+  }
+  .rev strong{ white-space:nowrap; }
+
+  .notice{
+    background:#f3f7ff;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    padding:10px 20px;
+    font-size:12.5px;color:#1f2937;
+  }
+
+  .grid{
+    padding: 16px 20px;
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap:10px;
+  }
+  .field{
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .field label{
+    font-size:12px; color:#111; font-weight:700; letter-spacing:.3px;
+  }
+  .field input, .field select, .field textarea{
+    padding:8px 10px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    font-size:14px;
+    background:#fff;
+  }
+  .field textarea{ min-height:72px; resize:vertical; }
+
+  .section{
+    border-top:1.5px solid var(--dark);
+    border-bottom:1.5px solid var(--dark);
+    background:#fafbff;
+    padding:10px 20px;
+    font-weight:800;
+    text-transform:uppercase;
+    color:#111;
+    letter-spacing:.4px;
+    margin-top:6px;
+  }
+
+  /* Checklist */
+  .checklist{
+    padding: 6px 20px 16px;
+  }
+  .cl-head{
+    display:grid;
+    grid-template-columns: 1fr 90px 90px;
+    gap:10px;
+    align-items:center;
+    font-size:12px;
+    color:#111;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .row{
+    display:grid;
+    grid-template-columns: 1fr 90px 90px;
+    gap:10px;
+    padding:10px 0;
+    border-top:1px solid var(--border);
+    align-items:center;
+  }
+  .q{
+    font-size:14px;color:#111;
+  }
+
+  /* Switch on/off exclusivo */
+  .switch{ display:flex; justify-content:center; }
+  .toggle{
+    position:relative; width:62px; height:28px;
+    background:#e2e8f0;
+    border-radius:999px;
+    border:1px solid var(--border);
+    cursor:pointer;
+    transition:.2s ease;
+  }
+  .toggle::after{
+    content:"";
+    position:absolute; top:2px; left:2px;
+    width:24px; height:24px; background:#fff;
+    border-radius:50%;
+    box-shadow:0 1px 2px rgba(0,0,0,.15);
+    transition:.2s ease;
+  }
+  .toggle[data-state="on"]{
+    background:linear-gradient(180deg, #7cc06b, #48bb78);
+    border-color:#3ea16a;
+  }
+  .toggle[data-state="on"]::after{ left:36px; }
+  .toggle[data-state="off"]{
+    background:linear-gradient(180deg, #f7b1b1, #f56565);
+    border-color:#e53e3e;
+  }
+
+  /* Oportunidades */
+  .box-title{
+    background:#f3f4f6;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    padding:8px 20px; font-weight:800; color:#111; letter-spacing:.4px;
+  }
+  .op-lines{
+    padding: 8px 20px 18px;
+  }
+  .op-lines textarea{
+    width:100%; min-height:160px; resize:vertical;
+    border:1px dashed var(--border);
+    border-radius:8px; padding:10px 12px;
+    font-size:14px; background:#fff;
+  }
+
+  /* Assinaturas */
+  .signs{
+    padding: 8px 20px 20px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:16px;
+  }
+  .sign-block{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px 12px;
+  }
+  .sign-title{
+    font-weight:800; color:#111; margin-bottom:8px;
+    font-size:13.5px;
+  }
+  .sign-grid{
+    display:grid; grid-template-columns: 1.2fr .8fr .8fr;
+    gap:10px; margin-bottom:10px;
+  }
+
+  .sig-wrap{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:8px;
+    background:#fff;
+  }
+  .sig-canvas{
+    width:100%; height:140px; display:block;
+    background:
+      repeating-linear-gradient(transparent, transparent 34px, #f2f6ff 36px, #f2f6ff 36px)
+    ;
+    border-radius:6px;
+    touch-action: none; /* importante para touch */
+  }
+  .sig-tools{
+    display:flex; gap:8px; justify-content:flex-end; margin-top:8px;
+  }
+  .btn{
+    appearance:none; border:1px solid var(--border);
+    background:#fff; color:#111; padding:7px 12px; border-radius:8px;
+    font-weight:700; cursor:pointer; transition:.15s; font-size:13px;
+  }
+  .btn.primary{ background:var(--accent); border-color:#2765a8; color:#fff; }
+  .btn.danger{ color:#fff; background:var(--danger); border-color:#c53030; }
+  .btn:active{ transform:translateY(1px); }
+
+  .footer-band{
+    background:#111; color:#fff; text-align:center;
+    padding:10px 12px; font-weight:800; letter-spacing:.5px;
+    text-transform:uppercase; border-top:1px solid #000;
+  }
+
+  .actions{
+    display:flex; gap:10px; padding:14px 20px; justify-content:flex-end;
+    border-top:1px solid var(--border);
+    background:#fafafa; position:sticky; bottom:0;
+  }
+
+  /* Impressão A4 */
+  @page { size: A4; margin: 16mm; }
+  @media print{
+    body{ background:#fff; }
+    .page{ box-shadow:none; border:none; margin:0; width:auto; }
+    .actions{ display:none; }
+    .sig-tools{ display:none; }
+  }
+
+  /* Pílula de status do número */
+  .pill{
+    background:#eef6ff; color:#0c4a6e; padding:2px 8px; border-radius:999px; font-weight:700;
+    border:1px solid #cfe6ff; font-size:12px;
+  }
+
+</style>
+</head>
+<body>
+  <div class="page" id="page">
+
+    <header>
+      <div class="logo" aria-label="Logo">SAMARCO</div>
+      <div class="title">
+        <h1>AT – Autorização para Trabalho</h1>
+      </div>
+      <div class="rev">
+        <div class="box"><strong>Revisão:</strong> <span id="rev">01</span></div>
+        <div class="box"><strong>Número:</strong> <span class="pill" id="numero-at">—</span>
+          <button class="btn" id="btn-novo-num" style="margin-left:6px;">Novo nº</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="notice">
+      É proibido iniciar qualquer atividade sem a prévia verificação e liberação deste documento pelos profissionais da
+      Gerenciadora de Obras e Segurança.
+    </div>
+
+    <!-- Dados principais -->
+    <div class="grid">
+      <div class="field" style="grid-column: span 2;">
+        <label for="atividade">Atividade</label>
+        <input id="atividade" name="atividade" type="text" placeholder="Descreva a atividade" />
+      </div>
+      <div class="field">
+        <label for="area">Área / Local</label>
+        <input id="area" name="area" type="text" placeholder="Área / Local" />
+      </div>
+      <div class="field">
+        <label for="responsavel">Líder / Contratada</label>
+        <input id="responsavel" name="responsavel" type="text" placeholder="Nome da contratada ou líder" />
+      </div>
+
+      <div class="field">
+        <label for="data_inicio">Início da Atividade - Data</label>
+        <input id="data_inicio" name="data_inicio" type="date" />
+      </div>
+      <div class="field">
+        <label for="hora_inicio">Início - Hora</label>
+        <input id="hora_inicio" name="hora_inicio" type="time" />
+      </div>
+      <div class="field">
+        <label for="data_termino">Término da Atividade - Data</label>
+        <input id="data_termino" name="data_termino" type="date" />
+      </div>
+      <div class="field">
+        <label for="hora_termino">Término - Hora</label>
+        <input id="hora_termino" name="hora_termino" type="time" />
+      </div>
+    </div>
+
+    <div class="section">Verificação prévia (marque “SIM” ou “NÃO”)</div>
+
+    <div class="checklist" id="checklist">
+      <div class="cl-head">
+        <div></div>
+        <div style="text-align:center;">SIM</div>
+        <div style="text-align:center;">NÃO</div>
+      </div>
+
+      <div class="row" data-row="1">
+        <div class="q">1) O líder da atividade está presente e disponível para acompanhamento durante toda a jornada?</div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q1 Sim" data-side="sim" data-state="off"></div></div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q1 Não" data-side="nao" data-state="off"></div></div>
+      </div>
+
+      <div class="row" data-row="2">
+        <div class="q">2) APR/Permissão de Trabalho está disponível, compreendida pela equipe e atualizada para a tarefa?</div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q2 Sim" data-side="sim" data-state="off"></div></div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q2 Não" data-side="nao" data-state="off"></div></div>
+      </div>
+
+      <div class="row" data-row="3">
+        <div class="q">3) Recursos necessários (ferramentas, EPC, EPI) estão em boas condições e adequados ao serviço?</div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q3 Sim" data-side="sim" data-state="off"></div></div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q3 Não" data-side="nao" data-state="off"></div></div>
+      </div>
+
+      <div class="row" data-row="4">
+        <div class="q">4) Interferências e riscos do ambiente foram identificados (energia, altura, escavação, químicos etc.)?</div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q4 Sim" data-side="sim" data-state="off"></div></div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q4 Não" data-side="nao" data-state="off"></div></div>
+      </div>
+
+      <div class="row" data-row="5">
+        <div class="q">5) A área de trabalho está isolada e sinalizada, impedindo o acesso de pessoas não envolvidas?</div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q5 Sim" data-side="sim" data-state="off"></div></div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q5 Não" data-side="nao" data-state="off"></div></div>
+      </div>
+
+      <div class="row" data-row="6">
+        <div class="q">6) Há comunicação clara com as equipes e liberação formal do gestor da área?</div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q6 Sim" data-side="sim" data-state="off"></div></div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q6 Não" data-side="nao" data-state="off"></div></div>
+      </div>
+
+      <div class="row" data-row="7">
+        <div class="q">7) Condições climáticas e iluminação são adequadas para execução segura do trabalho?</div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q7 Sim" data-side="sim" data-state="off"></div></div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q7 Não" data-side="nao" data-state="off"></div></div>
+      </div>
+
+      <div class="row" data-row="8">
+        <div class="q">8) Existe plano de resposta a emergências e meios de comunicação disponíveis?</div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q8 Sim" data-side="sim" data-state="off"></div></div>
+        <div class="switch"><div class="toggle" role="switch" tabindex="0" aria-label="Q8 Não" data-side="nao" data-state="off"></div></div>
+      </div>
+    </div>
+
+    <div class="box-title">Oportunidades de Melhoria</div>
+    <div class="op-lines">
+      <textarea id="oportunidades" placeholder="Registre observações, riscos adicionais, necessidades de recursos e oportunidades de melhoria..."></textarea>
+    </div>
+
+    <div class="signs">
+      <!-- Obras -->
+      <div class="sign-block">
+        <div class="sign-title">Verificação – Gerenciadora de Obras</div>
+        <div class="sign-grid">
+          <div class="field"><label for="obra_nome">Nome</label><input id="obra_nome" type="text" /></div>
+          <div class="field"><label for="obra_data">Data</label><input id="obra_data" type="date" /></div>
+          <div class="field"><label for="obra_hora">Hora</label><input id="obra_hora" type="time" /></div>
+        </div>
+        <div class="sig-wrap">
+          <label class="field" style="margin-bottom:6px;"><strong>Assinatura (desenhe no quadro):</strong></label>
+          <canvas id="sig-obras" class="sig-canvas" aria-label="Assinatura Obras"></canvas>
+          <div class="sig-tools">
+            <button class="btn" data-action="undo" data-target="#sig-obras">Desfazer</button>
+            <button class="btn danger" data-action="clear" data-target="#sig-obras">Limpar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Segurança -->
+      <div class="sign-block">
+        <div class="sign-title">Verificação – Gerenciadora de Segurança</div>
+        <div class="sign-grid">
+          <div class="field"><label for="seg_nome">Nome</label><input id="seg_nome" type="text" /></div>
+          <div class="field"><label for="seg_data">Data</label><input id="seg_data" type="date" /></div>
+          <div class="field"><label for="seg_hora">Hora</label><input id="seg_hora" type="time" /></div>
+        </div>
+        <div class="sig-wrap">
+          <label class="field" style="margin-bottom:6px;"><strong>Assinatura (desenhe no quadro):</strong></label>
+          <canvas id="sig-seguranca" class="sig-canvas" aria-label="Assinatura Segurança"></canvas>
+          <div class="sig-tools">
+            <button class="btn" data-action="undo" data-target="#sig-seguranca">Desfazer</button>
+            <button class="btn danger" data-action="clear" data-target="#sig-seguranca">Limpar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-band">Se não for seguro, eu não faço!</div>
+
+    <div class="actions">
+      <button class="btn" id="btn-validar">Validar</button>
+      <button class="btn primary" onclick="window.print()">Salvar como PDF</button>
+      <button class="btn danger" id="btn-limpar">Limpar</button>
+    </div>
+  </div>
+
+<script>
+  /* ==========================
+     NUMERAÇÃO AUTOMÁTICA (AT-YYYYMMDD-####)
+     - Reinicia o contador diariamente
+     - Persiste via localStorage
+  =========================== */
+  function hojeKey(){
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    return `${yyyy}${mm}${dd}`;
+  }
+  function proximoNumero(){
+    const key = 'at_seq_' + hojeKey();
+    const n = Number(localStorage.getItem(key) || '0') + 1;
+    localStorage.setItem(key, String(n));
+    const num = `AT-${hojeKey()}-${String(n).padStart(4,'0')}`;
+    localStorage.setItem('at_lastNumber', num);
+    return num;
+  }
+  function numeroAtualOuNovo(){
+    const last = localStorage.getItem('at_lastNumber');
+    if(last && last.includes(hojeKey())) return last;
+    return proximoNumero();
+  }
+  const numeroSpan = document.getElementById('numero-at');
+  numeroSpan.textContent = numeroAtualOuNovo();
+  document.getElementById('btn-novo-num').addEventListener('click', ()=>{
+    if(confirm('Gerar um novo número para este formulário?')){
+      numeroSpan.textContent = proximoNumero();
+    }
+  });
+
+  /* ==========================
+     SWITCH SIM/NÃO EXCLUSIVO
+  =========================== */
+  const rows = document.querySelectorAll('.row');
+  rows.forEach(row => {
+    const toggles = row.querySelectorAll('.toggle');
+    toggles.forEach(tg => {
+      tg.addEventListener('click', () => handleToggle(row, tg));
+      tg.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleToggle(row, tg); }
+      });
+    });
+  });
+  function handleToggle(row, tg){
+    const current = tg.getAttribute('data-state');
+    const siblings = row.querySelectorAll('.toggle');
+    if(current === 'on'){
+      tg.setAttribute('data-state','off');
+    }else{
+      siblings.forEach(s => s.setAttribute('data-state','off'));
+      tg.setAttribute('data-state','on');
+    }
+  }
+
+  /* ==========================
+     SIGNATURE PAD (canvas) – mouse & toque
+     - Largura responsiva (HiDPI)
+     - Desfazer por traço
+  =========================== */
+  function createSignaturePad(canvas){
+    const ctx = canvas.getContext('2d');
+    const state = { strokes: [], current: [], drawing:false, color:'#0f172a', size: 2 };
+
+    function resize(){
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * ratio);
+      canvas.height = Math.floor(rect.height * ratio);
+      ctx.scale(ratio, ratio);
+      redraw();
+    }
+    function posFromEvent(e){
+      const rect = canvas.getBoundingClientRect();
+      const pX = e.clientX ?? (e.touches && e.touches[0]?.clientX);
+      const pY = e.clientY ?? (e.touches && e.touches[0]?.clientY);
+      return { x: (pX - rect.left), y: (pY - rect.top) };
+    }
+    function start(e){
+      e.preventDefault();
+      state.drawing = true;
+      state.current = [];
+      const p = posFromEvent(e);
+      state.current.push(p);
+      redraw();
+    }
+    function move(e){
+      if(!state.drawing) return;
+      const p = posFromEvent(e);
+      state.current.push(p);
+      redraw();
+    }
+    function end(e){
+      if(!state.drawing) return;
+      state.drawing = false;
+      if(state.current.length>0){
+        state.strokes.push(state.current.slice());
+        state.current = [];
+        redraw();
+      }
+    }
+    function redraw(){
+      // limpa
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = state.color;
+      ctx.lineWidth = state.size;
+
+      function drawStroke(pts){
+        if(pts.length<2){
+          // ponto
+          const p = pts[0];
+          ctx.beginPath(); ctx.arc(p.x, p.y, state.size/2, 0, Math.PI*2); ctx.fillStyle = state.color; ctx.fill();
+          return;
+        }
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for(let i=1;i<pts.length;i++){
+          ctx.lineTo(pts[i].x, pts[i].y);
+        }
+        ctx.stroke();
+      }
+
+      state.strokes.forEach(drawStroke);
+      if(state.current.length) drawStroke(state.current);
+    }
+
+    // Eventos (Pointer/Mouse/Touch – preferimos pointer quando disponível)
+    const hasPointer = window.PointerEvent;
+    if(hasPointer){
+      canvas.addEventListener('pointerdown', start);
+      canvas.addEventListener('pointermove', move);
+      window.addEventListener('pointerup', end);
+      canvas.addEventListener('pointerleave', end);
+    }else{
+      canvas.addEventListener('mousedown', start);
+      canvas.addEventListener('mousemove', move);
+      window.addEventListener('mouseup', end);
+      canvas.addEventListener('mouseleave', end);
+
+      canvas.addEventListener('touchstart', start, {passive:false});
+      canvas.addEventListener('touchmove', move, {passive:false});
+      window.addEventListener('touchend', end);
+      canvas.addEventListener('touchcancel', end);
+    }
+
+    // inicializa
+    resize();
+    new ResizeObserver(resize).observe(canvas);
+
+    return {
+      clear(){ state.strokes=[]; state.current=[]; redraw(); },
+      undo(){ state.strokes.pop(); redraw(); },
+      isEmpty(){ return state.strokes.length===0; },
+      toDataURL(){ 
+        // gera imagem PNG do tamanho visual (sem aplicar o scale 2x na exportação)
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = canvas.clientWidth;
+        exportCanvas.height = canvas.clientHeight;
+        const ectx = exportCanvas.getContext('2d');
+        ectx.lineCap='round'; ectx.lineJoin='round'; ectx.strokeStyle=state.color; ectx.lineWidth=state.size;
+        function draw(pts){
+          if(pts.length<2){ const p=pts[0]; ectx.beginPath(); ectx.arc(p.x,p.y,state.size/2,0,Math.PI*2); ectx.fillStyle=state.color; ectx.fill(); return; }
+          ectx.beginPath(); ectx.moveTo(pts[0].x, pts[0].y);
+          for(let i=1;i<pts.length;i++) ectx.lineTo(pts[i].x, pts[i].y);
+          ectx.stroke();
+        }
+        state.strokes.forEach(draw);
+        return exportCanvas.toDataURL('image/png');
+      }
+    };
+  }
+
+  // Instâncias para Obras e Segurança
+  const padObras = createSignaturePad(document.getElementById('sig-obras'));
+  const padSeg = createSignaturePad(document.getElementById('sig-seguranca'));
+
+  // Botões de desfazer/limpar
+  document.querySelectorAll('.sig-tools .btn').forEach(btn=>{
+    const targetSel = btn.getAttribute('data-target');
+    const action = btn.getAttribute('data-action');
+    btn.addEventListener('click', ()=>{
+      const pad = (targetSel==="#sig-obras") ? padObras : padSeg;
+      if(action==='clear') pad.clear();
+      if(action==='undo') pad.undo();
+    });
+  });
+
+  /* ==========================
+     SERIALIZAÇÃO + VALIDAÇÃO
+  =========================== */
+  function getFormData(){
+    const data = {
+      numero: document.getElementById('numero-at').textContent.trim(),
+      atividade: document.getElementById('atividade').value.trim(),
+      area: document.getElementById('area').value.trim(),
+      responsavel: document.getElementById('responsavel').value.trim(),
+      inicio: {
+        data: document.getElementById('data_inicio').value,
+        hora: document.getElementById('hora_inicio').value
+      },
+      termino: {
+        data: document.getElementById('data_termino').value,
+        hora: document.getElementById('hora_termino').value
+      },
+      checklist: {},
+      oportunidades: document.getElementById('oportunidades').value.trim(),
+      obras: {
+        nome: document.getElementById('obra_nome').value.trim(),
+        data: document.getElementById('obra_data').value,
+        hora: document.getElementById('obra_hora').value,
+        assinatura: padObras.isEmpty() ? "" : padObras.toDataURL()
+      },
+      seguranca: {
+        nome: document.getElementById('seg_nome').value.trim(),
+        data: document.getElementById('seg_data').value,
+        hora: document.getElementById('seg_hora').value,
+        assinatura: padSeg.isEmpty() ? "" : padSeg.toDataURL()
+      }
+    };
+    document.querySelectorAll('.row').forEach(row => {
+      const idx = row.getAttribute('data-row');
+      const simOn = row.querySelector('.toggle[data-side="sim"][data-state="on"]');
+      const naoOn = row.querySelector('.toggle[data-side="nao"][data-state="on"]');
+      data.checklist['q'+idx] = simOn ? 'SIM' : (naoOn ? 'NÃO' : '');
+    });
+    return data;
+  }
+
+  document.getElementById('btn-validar').addEventListener('click', () => {
+    const d = getFormData();
+    const erros = [];
+
+    if(!d.atividade) erros.push('Informe a Atividade.');
+    if(!d.area) erros.push('Informe a Área/Local.');
+    if(!d.inicio.data || !d.inicio.hora) erros.push('Informe data e hora de início.');
+    if(!d.termino.data || !d.termino.hora) erros.push('Informe data e hora de término.');
+
+    Object.keys(d.checklist).forEach(k => {
+      if(!d.checklist[k]) erros.push(`Selecione SIM ou NÃO na questão ${k.replace('q','')}.`);
+    });
+
+    if(!d.obras.nome) erros.push('Informe o nome (Obras).');
+    if(!d.seguranca.nome) erros.push('Informe o nome (Segurança).');
+
+    if(erros.length){
+      alert('Corrija os seguintes itens:\n\n- ' + erros.join('\n- '));
+    } else {
+      console.log('Dados do formulário:', d);
+      alert('Tudo certo! Formulário válido. (Veja os dados no console do navegador)');
+    }
+  });
+
+  document.getElementById('btn-limpar').addEventListener('click', () => {
+    if(!confirm('Deseja limpar todos os campos?')) return;
+    document.querySelectorAll('input, textarea').forEach(el => {
+      if(el.type === 'date' || el.type === 'time' || el.type === 'text') el.value = '';
+      if(el.tagName.toLowerCase() === 'textarea') el.value = '';
+    });
+    document.querySelectorAll('.toggle').forEach(t => t.setAttribute('data-state','off'));
+    padObras.clear(); padSeg.clear();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+</script>
+</body>
+</html>
+``
